@@ -2,18 +2,18 @@ module Balboa
   class NoDateInFilenameError < StandardError; end
 
   MONTH_MAP = {
-    '01' => '01.Jan',
-    '02' => '02.Feb',
-    '03' => '03.Mar',
-    '04' => '04.Apr',
-    '05' => '05.May',
-    '06' => '06.Jun',
-    '07' => '07.Jul',
-    '08' => '08.Aug',
-    '09' => '09.Sep',
-    '10' => '10.Oct',
-    '11' => '11.Nov',
-    '12' => '12.Dec'
+    "01" => "01.Jan",
+    "02" => "02.Feb",
+    "03" => "03.Mar",
+    "04" => "04.Apr",
+    "05" => "05.May",
+    "06" => "06.Jun",
+    "07" => "07.Jul",
+    "08" => "08.Aug",
+    "09" => "09.Sep",
+    "10" => "10.Oct",
+    "11" => "11.Nov",
+    "12" => "12.Dec",
   }
 
   class FilenameTools
@@ -21,7 +21,7 @@ module Balboa
       md = filethis_name.match(/(?<doc>.*)(?<year>\d{4})-(?<month>\d{2})-(?<date>\d{2})(?<other>.*)\.pdf/)
 
       date = "#{md[:year]}.#{md[:month]}.#{md[:date]}"
-      name = "#{md[:doc].strip.gsub(' ','.')}"
+      name = md[:doc].strip.tr(" ", ".").to_s
       name += ".#{md[:other].strip}" unless md[:other].empty?
 
       "#{date}.#{name}.pdf"
