@@ -1,4 +1,4 @@
-require "balboa/file_this"
+require "balboa/filename_tools"
 require "balboa/version"
 
 module Balboa
