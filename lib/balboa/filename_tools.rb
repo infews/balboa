@@ -1,6 +1,7 @@
 module Balboa
   class NoDateInFilenameError < StandardError; end
 
+  MONTHS = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
   MONTH_MAP = {
     "01" => "Jan",
     "02" => "Feb",
@@ -39,8 +40,6 @@ module Balboa
       directory_name << month_dirname(month_match[:month]) if month_match
       directory_name.join("/")
     end
-
-    private
 
     def month_dirname(month_number)
       [month_number, MONTH_MAP[month_number]].join(".")

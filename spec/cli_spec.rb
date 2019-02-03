@@ -104,6 +104,64 @@ RSpec.describe Balboa::CLI do
   #     errors when the year isn't present in the destination
   #     errors when the year/month isn't present in the destination
 
+  describe "make_archive_folders" do
+    let(:archive) {File.join(Dir.tmpdir, "spec_balboa_gem", "archive")}
+
+    before do
+      Timecop.freeze(Time.local(1999))
+      Dir.chdir(Dir.tmpdir) do
+        FileUtils.mkdir_p "spec_balboa_gem"
+      end
+    end
+
+    after do
+      Timecop.return
+      FileUtils.rm_rf File.join(Dir.tmpdir, "spec_balboa_gem")
+    end
+
+    it "makes the year folder for the current year" do
+      suppress_output do
+        cli.make_archive_folders archive
+      end
+
+      expect(File.exist?(File.join(archive, "Personal", "1999"))).to eq(true)
+    end
+
+    it "makes the month folders under the year folder" do
+      suppress_output do
+        cli.make_archive_folders archive
+      end
+
+      expect(File.exist?(File.join(archive, "Personal", "1999", "01.Jan"))).to eq(true)
+      expect(File.exist?(File.join(archive, "Personal", "1999", "02.Feb"))).to eq(true)
+      expect(File.exist?(File.join(archive, "Personal", "1999", "03.Mar"))).to eq(true)
+      expect(File.exist?(File.join(archive, "Personal", "1999", "04.Apr"))).to eq(true)
+      expect(File.exist?(File.join(archive, "Personal", "1999", "05.May"))).to eq(true)
+      expect(File.exist?(File.join(archive, "Personal", "1999", "06.Jun"))).to eq(true)
+      expect(File.exist?(File.join(archive, "Personal", "1999", "07.Jul"))).to eq(true)
+      expect(File.exist?(File.join(archive, "Personal", "1999", "08.Aug"))).to eq(true)
+      expect(File.exist?(File.join(archive, "Personal", "1999", "09.Sep"))).to eq(true)
+      expect(File.exist?(File.join(archive, "Personal", "1999", "10.Oct"))).to eq(true)
+      expect(File.exist?(File.join(archive, "Personal", "1999", "11.Nov"))).to eq(true)
+      expect(File.exist?(File.join(archive, "Personal", "1999", "12.Dec"))).to eq(true)
+    end
+
+    it "makes a tax folder" do
+      suppress_output do
+        cli.make_archive_folders archive
+      end
+
+      expect(File.exist?(File.join(archive, "Personal", "1999", "1999.Tax"))).to eq(true)
+    end
+
+    it "makes a media archve" do
+      suppress_output do
+        cli.make_archive_folders archive
+      end
+
+      expect(File.exist?(File.join(archive, "Personal", "1999", "1999.MediaArchive"))).to eq(true)
+    end
+  end
   # make_annual_folders
   # help/instructions
   # option validations

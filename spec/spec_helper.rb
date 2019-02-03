@@ -2,6 +2,7 @@ require "bundler/setup"
 require "balboa"
 
 require "fileutils"
+require "timecop"
 require "tmpdir"
 
 RSpec.configure do |config|
