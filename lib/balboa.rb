@@ -1,3 +1,4 @@
+require "balboa/cli"
 require "balboa/filename_tools"
 require "balboa/version"
 

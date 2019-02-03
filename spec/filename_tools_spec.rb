@@ -32,15 +32,15 @@ RSpec.describe Balboa::FilenameTools do
   describe "#month_directory_for" do
     context "when given a filename with a full date" do
       it "returns the directory path" do
-        expect(tools.directory_for("2019.01.12.FooBar.txt")).to eq(["2019", "01.Jan"])
-        expect(tools.directory_for("2014.05.23.FooBar.txt")).to eq(["2014", "05.May"])
-        expect(tools.directory_for("2198.11.01.FooBar.txt")).to eq(["2198", "11.Nov"])
+        expect(tools.directory_for("2019.01.12.FooBar.txt")).to eq("2019/01.Jan")
+        expect(tools.directory_for("2014.05.23.FooBar.txt")).to eq("2014/05.May")
+        expect(tools.directory_for("2198.11.01.FooBar.txt")).to eq("2198/11.Nov")
       end
     end
 
     context "when given a filename with a year" do
       it "returns the directory path" do
-        expect(tools.directory_for("2198.SomeOther.file.txt")).to eq(["2198"])
+        expect(tools.directory_for("2198.SomeOther.file.txt")).to eq("2198")
       end
     end
 
@@ -51,9 +51,5 @@ RSpec.describe Balboa::FilenameTools do
         }.to raise_error(Balboa::NoDateInFilenameError)
       end
     end
-  end
-
-  describe "#destination_path" do
-    it ""
   end
 end

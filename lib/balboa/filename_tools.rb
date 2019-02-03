@@ -37,7 +37,7 @@ module Balboa
       month_match = year_match[:rest].match(/^(?<month>\d{2}).*/)
 
       directory_name << month_dirname(month_match[:month]) if month_match
-      directory_name
+      directory_name.join("/")
     end
 
     private
