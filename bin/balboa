@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+libdir = File.join( File.dirname(__FILE__), "..", "lib")
+$LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
+
+require "balboa"
+
+Rainbow.enabled = true
+
+Balboa::CLI.start
