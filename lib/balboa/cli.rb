@@ -5,7 +5,7 @@ require "thor"
 module Balboa
   class CLI < Thor
     desc "archive_filethis FILETHIS_DIR ARCHIVE", "copies all PDFs from FileThis to the archive"
-    method_option :verbose => :boolean, :default => false
+    method_option verbose: :boolean, default: false
     def archive_filethis(source, archive_root)
       puts "Archiving files from #{source} to #{archive_root}"
 
@@ -32,10 +32,10 @@ module Balboa
           next
         end
 
-        puts Rainbow("Copying").green + " #{pdf_name}" + Rainbow(" #{File.join(year_month_path, archive_filename)}").green
+        puts Rainbow("Copying").green + " #{pdf_name} to " + Rainbow(File.join(year_month_path, archive_filename).to_s).green
         FileUtils.cp(path_to_pdf, full_path_to_archived_file)
       rescue
-        puts Rainbow("Skipping").red +  " #{pdf_name}" + Rainbow(" as we don't know where to archive it").red
+        puts Rainbow("Skipping").red + " #{pdf_name}" + Rainbow(" as we don't know where to archive it").red
       end
     end
 
