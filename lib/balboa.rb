@@ -1,5 +1,5 @@
 require "balboa/cli"
-require "balboa/filename_tools"
+require "balboa/filename_converter"
 require "balboa/version"
 
 module Balboa

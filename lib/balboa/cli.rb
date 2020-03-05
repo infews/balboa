@@ -9,7 +9,7 @@ module Balboa
     def archive_filethis(source, archive_root)
       puts "Archiving files from #{source} to #{archive_root}"
 
-      tools = FilenameTools.new
+      tools = FilenameConverter.new
 
       Dir.glob("#{source}/**/*.pdf") # odd bug, need to Dir.glob twice to get the files?
 
@@ -41,7 +41,7 @@ module Balboa
 
     desc "make_archive_folders DIR", "makes standard year/month folders under DIR path"
     def make_archive_folders(archive_root)
-      tools = FilenameTools.new
+      tools = FilenameConverter.new
 
       year = Time.now.year.to_s
       year_folder_path = File.join(archive_root, "Personal", year)
