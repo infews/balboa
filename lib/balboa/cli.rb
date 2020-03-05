@@ -9,8 +9,6 @@ module Balboa
     def archive_filethis(source, archive_root)
       puts "Archiving files from #{source} to #{archive_root}"
 
-      tools = FilenameConverter.new
-
       Dir.glob("#{source}/**/*.pdf") # odd bug, need to Dir.glob twice to get the files?
 
       pdfs = Dir.glob("#{source}/**/*.pdf").sort
@@ -41,14 +39,12 @@ module Balboa
 
     desc "make_archive_folders DIR", "makes standard year/month folders under DIR path"
     def make_archive_folders(archive_root)
-      tools = FilenameConverter.new
-
       year = Time.now.year.to_s
       year_folder_path = File.join(archive_root, "Personal", year)
       puts "Creating #{year_folder_path}"
       FileUtils.mkdir_p(year_folder_path)
 
-      dirs = MONTHS.collect { |month| tools.month_dirname(month) }
+      dirs = MONTH_DIRNAMES
       dirs << "#{year}.Tax"
       dirs << "#{year}.MediaArchive"
       dirs.each do |dir|
