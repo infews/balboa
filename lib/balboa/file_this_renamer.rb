@@ -19,4 +19,3 @@ module Balboa
     end
   end
 end
-

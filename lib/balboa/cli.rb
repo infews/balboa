@@ -17,7 +17,7 @@ module Balboa
       puts Rainbow("Found #{pdfs.length} PDF files").cyan
       pdfs.each do |path_to_pdf|
         pdf_name = path_to_pdf.split("/").last
-        converter = FileThisRenamer.new(pdf_name)
+        converter = FileThisRenamer.new
 
         unless File.exist? File.join(archive_root, converter.destination_directory)
           puts Rainbow("Skipping").red + " #{pdf_name}" + Rainbow(" as the archive destination doesn't exist").red

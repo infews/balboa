@@ -1,6 +1,7 @@
 require "balboa/cli"
 require "balboa/file_this_renamer"
 require "balboa/destination_directory"
+require "balboa/pdf_finder"
 require "balboa/version"
 
 module Balboa
