@@ -10,21 +10,21 @@ module Balboa
       puts "Archiving files from #{source} to #{archive_root}"
 
       raise Error.new("Stopping: Archive root does not exist") unless File.exist?(archive_root)
-      
+
       Dir.glob("#{source}/**/*.pdf") # odd bug, need to Dir.glob twice to get the files?
 
       pdfs = Dir.glob("#{source}/**/*.pdf").sort
       puts Rainbow("Found #{pdfs.length} PDF files").cyan
       pdfs.each do |path_to_pdf|
         pdf_name = path_to_pdf.split("/").last
-        converter = FilenameConverter.new(pdf_name)
+        converter = FileThisRenamer.new(pdf_name)
 
         unless File.exist? File.join(archive_root, converter.destination_directory)
           puts Rainbow("Skipping").red + " #{pdf_name}" + Rainbow(" as the archive destination doesn't exist").red
           next
         end
 
-        full_path_to_archived_file = File.join(archive_root,  converter.destination_directory, converter.filename)
+        full_path_to_archived_file = File.join(archive_root, converter.destination_directory, converter.filename)
 
         if File.exist? full_path_to_archived_file
           puts "Skipping #{pdf_name} as #{converter.filename} is already in the archive" if options[:versbose]

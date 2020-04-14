@@ -1,5 +1,6 @@
 require "balboa/cli"
-require "balboa/filename_converter"
+require "balboa/file_this_renamer"
+require "balboa/destination_directory"
 require "balboa/version"
 
 module Balboa
@@ -16,6 +17,6 @@ module Balboa
     "09.Sep",
     "10.Oct",
     "11.Nov",
-    "12.Dec"
+    "12.Dec",
   ]
 end
