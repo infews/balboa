@@ -7,11 +7,7 @@ def archive_filethis(source, archive_root)
 
   copy_map = FileThisMap.new.copy_map_for(pdfs, FileThisRenamer.new)
 
-  copy_map.each do |entry|
-    # entry[:original_full_path] = 'foo/bar/baz 2010-11-02.pdf'
-    # entry[:destination_dir] = "2010/11.Nov"
-    # entry[:new_name] = "2010.11.02.baz.pdf"
-
+  copy_map[:included].each do |entry|
     destination_directory = File.join(archive_root, entry[:destination_directory])
     unless File.exist? destination_directory
       FileUtils.mkdir_p destination_directory
@@ -27,6 +23,10 @@ def archive_filethis(source, archive_root)
     FileUtils.cp(path_to_pdf, full_path_to_archived_file)
 
     # rescue there was a problem
+  end
+
+  copy_map[:skipped].each do |file|
+    output
   end
 
   puts Rainbow("Found #{pdfs.length} PDF files").cyan

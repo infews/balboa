@@ -1,15 +1,16 @@
 module Balboa
   class CopyMapper
     def copy_map_for(sources, renamer)
-      sources.each_with_object([]) do |source_file, map|
-        new_name = renamer.new_name_for(source_file)
-        next if new_name.nil?
-
+      sources.each_with_object([]) do |full_path_to_source_file, map|
+        filename = File.basename(full_path_to_source_file)
+        new_name = renamer.new_name_for(filename)
         map << {
-          original_full_path: source_file,
+          original_full_path: full_path_to_source_file,
           destination_directory: directory_for(new_name),
           new_name: new_name,
         }
+      rescue NoDateInFilenameError
+        next
       end
     end
 

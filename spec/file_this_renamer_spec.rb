@@ -17,5 +17,14 @@ RSpec.describe Balboa::FileThisRenamer do
         expect(renamer.new_name_for(existing_filename)).to eq("2018.07.12.Allstate.Automobile.904150241.Statements.4.pdf")
       end
     end
+
+    context "when the file doesn't fit our expectations of re-namable" do
+      let(:existing_filename) {"filename without date.pdf"}
+      it "raises and error" do
+        expect {
+          renamer.new_name_for(existing_filename)
+        }.to raise_error(Balboa::NoDateInFilenameError)
+      end
+    end
   end
 end

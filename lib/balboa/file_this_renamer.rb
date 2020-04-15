@@ -4,7 +4,7 @@ module Balboa
   class FileThisRenamer
     def new_name_for(filename)
       match = filename.match(/(?<doc>.*)(?<year>\d{4})-(?<month>\d{2})-(?<date>\d{2})(?<other>.*)\.pdf/)
-      raise NoDateInFilenameError unless match
+      raise NoDateInFilenameError.new if match.nil?
 
       year = match[:year]
       month = match[:month]
