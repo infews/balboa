@@ -1,5 +1,6 @@
 require "balboa/cli"
 require "balboa/file_this_renamer"
+require "balboa/copy_mapper"
 require "balboa/destination_directory"
 require "balboa/jpg_finder"
 require "balboa/pdf_finder"
