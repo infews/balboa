@@ -1,5 +1,7 @@
 module Balboa
   class CopyMapper
+    # TODO: move this to a block form that yields the full path, return value goes into :new_name
+
     def copy_map_for(sources, renamer)
       sources.each_with_object({included: [], skipped: []}) do |full_path_to_source_file, map|
         filename = File.basename(full_path_to_source_file)
