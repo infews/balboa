@@ -3,26 +3,26 @@ RSpec.describe Balboa::FileThisRenamer do
 
   describe "#rename" do
     context "when the full date is present in the input" do
-      let(:existing_filename) { "Allstate Automobile 904150241 Statements 2018-07-12.pdf" }
+      let(:full_path_to_file) { "foo/bar/Allstate Automobile 904150241 Statements 2018-07-12.pdf" }
 
-      it "builds a new filename, .-delimited and converted to MMMM.YY.DD format" do
-        expect(renamer.new_name_for(existing_filename)).to eq("2018.07.12.Allstate.Automobile.904150241.Statements.pdf")
+      it "builds a new filename, .-delimited and converted to MMMM.YY.DD.everything.els format" do
+        expect(renamer.new_name_for(full_path_to_file)).to eq("2018.07.12.Allstate.Automobile.904150241.Statements.pdf")
       end
     end
 
     context "when FileThis adds text after the date because of collisions" do
-      let(:existing_filename) {"Allstate Automobile 904150241 Statements 2018-07-12 4.pdf"}
+      let(:full_path_to_file) {"biz/bam/Allstate Automobile 904150241 Statements 2018-07-12 4.pdf"}
 
       it "builds a new filename" do
-        expect(renamer.new_name_for(existing_filename)).to eq("2018.07.12.Allstate.Automobile.904150241.Statements.4.pdf")
+        expect(renamer.new_name_for(full_path_to_file)).to eq("2018.07.12.Allstate.Automobile.904150241.Statements.4.pdf")
       end
     end
 
     context "when the file doesn't fit our expectations of re-namable" do
-      let(:existing_filename) {"filename without date.pdf"}
+      let(:full_path_to_file) {"filename without date.pdf"}
       it "raises and error" do
         expect {
-          renamer.new_name_for(existing_filename)
+          renamer.new_name_for(full_path_to_file)
         }.to raise_error(Balboa::NoDateInFilenameError)
       end
     end
