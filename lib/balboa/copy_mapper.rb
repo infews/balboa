@@ -6,7 +6,7 @@ module Balboa
         map[:included] << {
           original_full_path: full_path_to_source_file,
           destination_directory: directory_for(new_name),
-          new_name: new_name,
+          new_name: new_name
         }
       rescue
         map[:excluded] << full_path_to_source_file

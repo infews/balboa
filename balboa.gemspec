@@ -3,15 +3,15 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "balboa/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "balboa"
-  spec.version       = Balboa::VERSION
-  spec.authors       = ["Davis W. Frank"]
-  spec.email         = ["dwfrank@gmail.com"]
+  spec.name = "balboa"
+  spec.version = Balboa::VERSION
+  spec.authors = ["Davis W. Frank"]
+  spec.email = ["dwfrank@gmail.com"]
 
-  spec.summary       = "A Ruby Gem for utils for my personal workstations"
-  spec.description   = "Some utils I use all the time, that happen to be TDD'd in Ruby"
-  spec.homepage      = "https://github.com/infews/balboa"
-  spec.license       = "MIT"
+  spec.summary = "A Ruby Gem for utils for my personal workstations"
+  spec.description = "Some utils I use all the time, that happen to be TDD'd in Ruby"
+  spec.homepage = "https://github.com/infews/balboa"
+  spec.license = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -31,14 +31,14 @@ Gem::Specification.new do |spec|
   spec.files = Dir.chdir(File.expand_path("..", __FILE__)) do
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   end
-  spec.bindir        = "bin"
-  spec.executables   = "balboa"
+  spec.bindir = "bin"
+  spec.executables = "balboa"
   spec.require_paths = ["lib"]
 
   spec.add_dependency "rainbow"
   spec.add_dependency "thor"
 
-  spec.add_development_dependency "bundler", "~> 2.0"
+  spec.add_development_dependency "bundler", ">= 2.0"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "standard"
