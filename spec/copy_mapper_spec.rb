@@ -1,19 +1,21 @@
 RSpec.describe Balboa::CopyMapper do
   let(:mapper) { Balboa::CopyMapper.new }
-  let(:renamer) {instance_double("FileThisRenamer")}
-  let(:copy_map) {mapper.copy_map_for(sources, renamer)}
+  let(:renamer) { double("Renamer") }
+  let(:copy_map) {
+    mapper.copy_map_for(sources) { |full_path| renamer.new_name_for(full_path) }
+  }
 
   describe "#copy_map_for" do
     context "when there are no renamable files" do
-      let(:sources) {[]}
+      let(:sources) { [] }
       it "returns an empty map" do
         expect(renamer).not_to receive(:new_name_for)
-        expect(copy_map).to eq({included: [], skipped: []})
+        expect(copy_map).to eq({included: [], excluded: []})
       end
     end
 
     context "when it operates only files to be included" do
-      let(:sources) {["foo/bar/baz 2010-01-01.pdf", "foo/bar/baz 2011-02-01.pdf"]}
+      let(:sources) { ["foo/bar/baz 2010-01-01.pdf", "foo/bar/baz 2011-02-01.pdf"] }
 
       before do
         expect(renamer).to receive(:new_name_for).with("foo/bar/baz 2010-01-01.pdf").and_return("2010.01.01.baz.pdf")
@@ -35,13 +37,13 @@ RSpec.describe Balboa::CopyMapper do
         expect(entry[:new_name]).to eq("2011.02.01.baz.pdf")
       end
 
-      it "builds an empty skipped map" do
-        expect(copy_map[:skipped].length).to eq(0)
+      it "builds an empty excluded map" do
+        expect(copy_map[:excluded].length).to eq(0)
       end
     end
 
-    context "when the sources list includes files that should be skipped" do
-      let(:sources) {["foo/bar/baz 2010-01-01.pdf", "foo/bar/skip_me"]}
+    context "when the sources list includes files that should be excluded" do
+      let(:sources) { ["foo/bar/baz 2010-01-01.pdf", "foo/bar/skip_me"] }
 
       before do
         expect(renamer).to receive(:new_name_for).with("foo/bar/baz 2010-01-01.pdf").and_return("2010.01.01.baz.pdf")
@@ -59,10 +61,10 @@ RSpec.describe Balboa::CopyMapper do
       end
 
       it "skips any entry that the renamer doesn't rename" do
-        skipped = copy_map[:skipped]
-        expect(skipped.length).to eq(1)
+        excluded = copy_map[:excluded]
+        expect(excluded.length).to eq(1)
 
-        entry = skipped.first
+        entry = excluded.first
         expect(entry).to eq("foo/bar/skip_me")
       end
     end
