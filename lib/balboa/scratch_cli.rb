@@ -148,7 +148,7 @@ def archive_filethis_5(source, archive_root)
   puts skipped # these
 
   collider.rename_destination_files
-  archiver.update_filemap(collider.files)
+  archiver.update_filemap(collider.file_map)
 
   archiver.archive
   puts archiver.file_map.values
@@ -168,12 +168,11 @@ def archive_images(source, archive_root)
 
   collider = CollisionResolver.new(archiver.files)
 
-  collider.remove_non_collisions
-  skipped = collider.remove_files_without_collisions!
+  skipped = collider.remove_files_without_collisions
   puts skipped # these
 
   collider.rename_collisions
-  archiver.update_files(collider.files)
+  archiver.update_files(collider.file_map)
 
   archiver.archive
   puts archiver.files

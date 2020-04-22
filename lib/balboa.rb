@@ -1,5 +1,6 @@
 require "balboa/cli"
 require "balboa/file_this_archiver"
+require "balboa/collision_resolver"
 require "balboa/image_renamer"
 require "balboa/copy_mapper"
 require "balboa/version"
