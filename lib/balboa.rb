@@ -7,6 +7,9 @@ require "balboa/version"
 
 module Balboa
   class Error < StandardError; end
+  class NoSourceDirectoryError < Error; end
+  class NoArchiveDirectoryError < Error; end
+
   MONTH_DIRNAMES = [
     "01.Jan",
     "02.Feb",
