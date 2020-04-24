@@ -10,9 +10,7 @@ module Balboa
     def archive_filethis(source, archive_root)
       raise NoSourceDirectoryError.new("Source directory #{source} does not exist.") unless File.exist? source
       raise NoArchiveDirectoryError.new("Archive root #{archive_root} does not exist.") unless File.exist?(archive_root)
-
-      # Dir.glob("#{source}/**/*.pdf") # odd bug, need to Dir.glob twice to get the files?
-
+      
       pdfs = Dir.glob("#{source}/**/*.pdf").sort
       puts(Rainbow("No PDFs found in #{source}.").red) && return if pdfs.length == 0
 
