@@ -40,6 +40,7 @@ RSpec.describe Balboa::FileThisArchiver do
         expect(archiver.file_map).to eq({})
       end
     end
+
     context "after naming/renameing" do
       before do
         archiver.name_destination_files
@@ -47,7 +48,8 @@ RSpec.describe Balboa::FileThisArchiver do
       it "renames all the files to the archive format" do
         file_map = archiver.file_map
         expect(file_map.length).to eq(3)
-        expect(file_map["foo/bar/Allstate Automobile 904150241 Statements 2018-07-12.pdf"]).to eq("2018.07.12.Allstate.Automobile.904150241.Statements.pdf")
+        expect(file_map["foo/bar/Allstate Automobile 904150241 Statements 2018-07-12.pdf"])
+          .to eq("#{archive_root}/2018/07.Jul/2018.07.12.Allstate.Automobile.904150241.Statements.pdf")
       end
     end
   end
@@ -56,7 +58,7 @@ RSpec.describe Balboa::FileThisArchiver do
     let(:full_path_to_file) { "filename without date.pdf" }
     it "raises and error" do
       expect {
-        archiver.new_name_for(full_path_to_file)
+        archiver.new_destination_path_for(full_path_to_file)
       }.to raise_error(Balboa::NoDateInFilenameError)
     end
   end
@@ -72,7 +74,7 @@ RSpec.describe Balboa::FileThisArchiver do
     it "merges the input map with the current map" do
       file_map = archiver.file_map
       expect(file_map.length).to eq(2)
-      expect(file_map["foo/bar/a 2018-07-12.pdf"]).to eq("2018.07.12.a.pdf")
+      expect(file_map["foo/bar/a 2018-07-12.pdf"]).to eq(File.join("archives", "2018", "07.Jul", "2018.07.12.a.pdf"))
       expect(file_map["foo/bar/a 2018-08-12.pdf"]).to eq("something else")
     end
   end
@@ -84,8 +86,37 @@ RSpec.describe Balboa::FileThisArchiver do
   end
 
   describe "#archive" do
+    let(:test_root_dir) { Dir.mktmpdir("spec_balboa_gem") }
+    let(:src_file1) { File.join(test_root_dir, "src", "file1") }
+    let(:src_file2) { File.join(test_root_dir, "src", "file2") }
+    let(:archive_file1) { File.join(test_root_dir, "dst", "file1") }
+    let(:archive_file2) { File.join(test_root_dir, "dst", "file2") }
+
+    before do
+      Dir.chdir(test_root_dir) do
+        FileUtils.mkdir_p("src")
+        FileUtils.touch(File.join("src", "file1"))
+        FileUtils.touch(File.join("src", "file2"))
+
+        FileUtils.mkdir_p(File.join("dst"))
+      end
+    end
+
+    context "with a valid file map" do
+      it "copies files according to the map" do
+        archiver.update_file_map({src_file1 => archive_file1, src_file2 => archive_file2})
+        archiver.archive
+
+        expect(File).to exist(archive_file1)
+        expect(File).to exist(archive_file2)
+      end
+    end
+
     it "errors if there are any nils in the map"
-    it "archives files according to the map"
+
+    after do
+      FileUtils.remove_entry test_root_dir
+    end
   end
 
   context "(integration)" do

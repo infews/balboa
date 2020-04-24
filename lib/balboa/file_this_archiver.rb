@@ -7,6 +7,7 @@ module Balboa
 
     def initialize(source_files, archive_root)
       @source_files = source_files
+      @archive_root = archive_root
       @file_map = {}
     end
 
@@ -19,11 +20,11 @@ module Balboa
 
     def name_destination_files
       @source_files.each_with_object(@file_map) do |source_file, map|
-        map[source_file] = new_name_for(source_file)
+        map[source_file] = new_destination_path_for(source_file)
       end
     end
 
-    def new_name_for(source_file)
+    def new_destination_path_for(source_file)
       match = File.basename(source_file).match(FILETHIS_REGEX)
       raise NoDateInFilenameError.new if match.nil?
 
@@ -33,10 +34,12 @@ module Balboa
       doc = match[:doc]
       other = match[:other]
 
-      name = doc.strip.tr(" ", ".").to_s
-      name += ".#{other.strip}" unless other.empty?
+      rest_of_name = doc.strip.tr(" ", ".").to_s
+      rest_of_name += ".#{other.strip}" unless other.empty?
 
-      "#{year}.#{month}.#{date}.#{name}.pdf"
+      new_name = "#{year}.#{month}.#{date}.#{rest_of_name}.pdf"
+
+      File.join @archive_root, destination_directory_for(new_name), new_name
     end
 
     # Extractables Below
@@ -51,7 +54,14 @@ module Balboa
       year = match[:year]
       month = MONTH_DIRNAMES[match[:month].to_i - 1]
 
-      "#{year}/#{month}"
+      File.join(year, month)
+    end
+
+    def archive
+      @file_map.each do |source, destintion|
+        FileUtils.mkdir_p(File.dirname(destintion))
+        FileUtils.cp(source, destintion)
+      end
     end
   end
 end

@@ -25,6 +25,7 @@ module Balboa
 
       archiver.name_destination_files
 
+      puts("Archiving...\n")
       archiver.archive
 
       puts("Added #{archiver.file_map.length} files to the archive:")
