@@ -6,10 +6,6 @@ RSpec.describe Balboa::CLI do
   let(:archive) { "archive" }
   let(:archive_dir) { File.join test_root_dir, archive }
 
-  before do
-    Rainbow.enabled = false
-  end
-
   describe "#archive_filethis" do
     context "when then source directory doesn't exist" do
       let(:filethis) { "foo" }
@@ -41,10 +37,10 @@ RSpec.describe Balboa::CLI do
         FileUtils.mkdir_p archive_dir
       end
 
-      it "ends and is helpful" do
+      it "does nothing and is helpful" do
         expect {
           cli.archive_filethis filethis_dir, archive_dir
-        }.to output(/No PDFs found in #{filethis_dir}\./).to_stdout
+        }.to output(/No PDFs found in/).to_stdout
       end
     end
 
@@ -81,7 +77,7 @@ RSpec.describe Balboa::CLI do
       it "lists the source folder scanning" do
         expect {
           cli.archive_filethis filethis_dir, archive_dir
-        }.to output(/Looking for FileThis PDFs in #{filethis_dir} to rename and archive./).to_stdout
+        }.to output(/Looking for FileThis PDFs in #{filethis_dir} to rename and archive.../).to_stdout
       end
 
       it "lists files that will be skipped because they can't be matched" do

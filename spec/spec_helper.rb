@@ -37,3 +37,6 @@ ensure
   $stderr.reopen(original_stderr)
   retval
 end
+
+# We don't want color in our test output
+Rainbow.enabled = false
