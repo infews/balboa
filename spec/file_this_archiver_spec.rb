@@ -34,6 +34,25 @@ RSpec.describe Balboa::FileThisArchiver do
     end
   end
 
+  describe "#remove_files_already_in_the_archive" do
+    before do
+      allow(File).to receive(:exist?).with("#{archive_root}/2018/07.Jul/2018.07.12.Allstate.Automobile.904150241.Statements.pdf").and_return(false)
+      allow(File).to receive(:exist?).with("#{archive_root}/2018/08.Aug/2018.08.12.Allstate.Automobile.904150241.Statements.pdf").and_return(false)
+      allow(File).to receive(:exist?).with("#{archive_root}/2019/01.Jan/2019.01.11.Allstate.Automobile.904150241.Statements.pdf").and_return(true)
+    end
+
+    it "removes any file that already exists from the map" do
+      archiver.name_destination_files
+      archiver.remove_files_already_in_the_archive
+
+      file_map = archiver.file_map
+      expect(file_map.length).to eq(2)
+      expect(file_map["foo/bar/Allstate Automobile 904150241 Statements 2018-07-12.pdf"]).to_not be_nil
+      expect(file_map["foo/bar/Allstate Automobile 904150241 Statements 2018-08-12.pdf"]).to_not be_nil
+      expect(file_map["foo/bar/Allstate Automobile 904150241 Statements 2019-01-11.pdf"]).to be_nil
+    end
+  end
+
   describe "#file_map" do
     context "before naming/renaming" do
       it "returns an empty hash if rename hasn't happened" do
@@ -54,7 +73,7 @@ RSpec.describe Balboa::FileThisArchiver do
     end
   end
 
-  describe "#new_name_for" do
+  describe "#new_destination_path_for" do
     let(:full_path_to_file) { "filename without date.pdf" }
     it "raises and error" do
       expect {

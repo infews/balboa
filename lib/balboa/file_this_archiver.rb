@@ -42,6 +42,12 @@ module Balboa
       File.join @archive_root, destination_directory_for(new_name), new_name
     end
 
+    def remove_files_already_in_the_archive
+      @file_map.each do |source_path, destination_path|
+        @file_map.delete(source_path) if File.exist?(destination_path)
+      end
+    end
+
     # Extractables Below
 
     def update_file_map(updates)
@@ -58,9 +64,10 @@ module Balboa
     end
 
     def archive
-      @file_map.each do |source, destintion|
-        FileUtils.mkdir_p(File.dirname(destintion))
-        FileUtils.cp(source, destintion)
+      @file_map.each do |source, destination|
+        FileUtils.mkdir_p(File.dirname(destination))
+        FileUtils.cp(source, destination)
+        puts "Added #{File.basename(destination)}"
       end
     end
   end

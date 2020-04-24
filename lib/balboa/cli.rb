@@ -10,7 +10,7 @@ module Balboa
     def archive_filethis(source, archive_root)
       raise NoSourceDirectoryError.new("Source directory #{source} does not exist.") unless File.exist? source
       raise NoArchiveDirectoryError.new("Archive root #{archive_root} does not exist.") unless File.exist?(archive_root)
-      
+
       pdfs = Dir.glob("#{source}/**/*.pdf").sort
       puts(Rainbow("No PDFs found in #{source}.").red) && return if pdfs.length == 0
 
@@ -26,6 +26,7 @@ module Balboa
       end
 
       archiver.name_destination_files
+      archiver.remove_files_already_in_the_archive
 
       puts Rainbow("Archiving ") + archiver.file_map.length.to_s + Rainbow(" files...\n").cyan
       archiver.archive

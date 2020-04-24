@@ -98,7 +98,7 @@ RSpec.describe Balboa::CLI do
       it "lists files that were copied" do
         expect {
           cli.archive_filethis filethis_dir, archive_dir
-        }.to output(/Added 2 files to the archive:.*|archive\/2018\/01\.Jan\/2018\.01\.04\.Allstate\.pdf|archive\/2018\/02\.Feb\/2018\.02\.04\.Allstate\.pdf/).to_stdout
+        }.to output(/Added 2 files to the archive/).to_stdout
       end
     end
   end
