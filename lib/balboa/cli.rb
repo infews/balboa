@@ -1,6 +1,8 @@
 require "fileutils"
-require "rainbow"
+require "rainbow/refinement"
 require "thor"
+
+using Rainbow
 
 module Balboa
   class CLI < Thor
@@ -12,27 +14,32 @@ module Balboa
       raise NoArchiveDirectoryError.new("Archive root #{archive_root} does not exist.") unless File.exist?(archive_root)
 
       pdfs = Dir.glob("#{source}/**/*.pdf").sort
-      puts(Rainbow("No PDFs found in #{source}.").red) && return if pdfs.length == 0
+      puts("No PDFs found in #{source}.".red) && return if pdfs.length == 0
 
-      puts Rainbow("Looking for FileThis PDFs in ").cyan + source.to_s + Rainbow(" to rename and archive...").cyan
+      puts "Looking for FileThis PDFs in ".cyan + source.to_s + " to rename and archive...".cyan
+      puts "Found #{pdfs.length} total PDFs.".cyan
 
       archiver = FileThisArchiver.new(pdfs, archive_root)
 
       excluded = archiver.remove_failed_matches
 
-      if excluded.length
-        puts Rainbow("Skipping these files as they are not renameable:\n").cyan
+      if excluded.length > 0
+        puts "Skipping these #{excluded.length} files as they are not renameable:".yellow
         excluded.each { |skip| puts skip }
       end
 
       archiver.name_destination_files
       archiver.remove_files_already_in_the_archive
 
-      puts Rainbow("Archiving ") + archiver.file_map.length.to_s + Rainbow(" files...\n").cyan
+      file_count = archiver.file_map.keys.length
+      raise NoFilesToArchiveError.new if file_count == 0 # I'm sorry, but return wasn't working here
+
+      puts "Archiving ".green + file_count.to_s + " files...".green
       archiver.archive
 
-      puts Rainbow("Added #{archiver.file_map.length} files to the archive:").cyan
-      archiver.file_map.values.each { |destination_file_path| puts destination_file_path }
+      puts "Added #{archiver.file_map.length} files to the archive.".cyan
+    rescue NoFilesToArchiveError
+      puts "No new files found to archive.".yellow
     end
 
     desc "make_archive_folders DIR", "makes standard year/month folders under DIR path"
