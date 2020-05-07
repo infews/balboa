@@ -1,24 +1,11 @@
-def archive_filethis_5(source, archive_root)
-  Dir.glob("#{source}/**/*.pdf") # odd bug, need to Dir.glob twice to get the files?
-  pdfs = Dir.glob("#{source}/**/*.pdf").sort
+def move_to_archive(source, archive_root)
+  files = Dir.glob("#{source}/**/*").sort
+  archiver = MoveArchiver.new(files, archive_root)
 
-  archiver = FileThisArchiver.new(pdfs, archive_root)
-
-  excluded = archiver.remove_failed_matches
-  puts excluded # we don't know how to rename these
-
-  archiver.name_destination_files
-
-  collider = CollisionResolver.new(archiver.file_map)
-
-  skipped = collider.remove_files_without_collisions
-  puts skipped # these
-
-  collider.rename_destination_files
-  archiver.update_filemap(collider.file_map)
+  archiver.remove_failed_matches
+  archiver.determine_destinations
 
   archiver.archive
-  puts archiver.file_map.values
 end
 
 def archive_images(source, archive_root)
