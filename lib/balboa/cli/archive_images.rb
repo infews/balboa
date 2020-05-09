@@ -19,23 +19,23 @@ module Balboa
       puts "Looking for images in ".cyan + source.to_s + " to rename and archive...".cyan
       puts "Found #{images.length} total images.".cyan
 
+      archiver = ImageArchiver.new(images, archive_root)
       exif_data = ExifTool.new(images)
-      archiver = ImageArchiver.new(images, archive_root, exif_data)
+      archiver.exif = exif_data
 
-      excluded = archiver.remove_failed_matches # remove anything we can't get EXIF data for
+      excluded = archiver.remove_files_without_exif
 
       if excluded.length > 0
-        puts "Skipping these #{excluded.length} files as they are not renameable:".yellow
+        puts "Skipping these #{excluded.length} files as they have no EXIF data".yellow
         excluded.each { |skip| puts skip }
       end
 
-      archiver.name_destination_files # renames
-      archiver.remove_files_already_in_the_archive #
+      archiver.build_file_map
 
       file_count = archiver.file_map.keys.length
       raise NoFilesToArchiveError.new if file_count == 0 # I'm sorry, but return wasn't working here
 
-      puts "Archiving ".green + file_count.to_s + " files...".green
+      puts "Archiving ".green + file_count.to_s + " images...".green
       archiver.archive
 
       puts "Added #{archiver.file_map.length} files to the archive.".cyan

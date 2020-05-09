@@ -38,14 +38,5 @@ module Balboa
         @file_map.delete(source_path) if File.exist?(destination_path)
       end
     end
-
-    # Extractables Below
-    def archive
-      @file_map.each do |source, destination|
-        FileUtils.mkdir_p(File.dirname(destination))
-        FileUtils.cp(source, destination)
-        puts "Added #{File.basename(destination)}"
-      end
-    end
   end
 end

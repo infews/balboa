@@ -22,5 +22,14 @@ module Balboa
 
       File.join(year, month)
     end
+
+    # By Default, #archive does a copy from source to destination
+    def archive
+      @file_map.each do |source, destination|
+        FileUtils.mkdir_p(File.dirname(destination))
+        FileUtils.cp(source, destination)
+        puts "Added #{File.basename(destination)}"
+      end
+    end
   end
 end
