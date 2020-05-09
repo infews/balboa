@@ -1,13 +1,3 @@
-def move_to_archive(source, archive_root)
-  files = Dir.glob("#{source}/**/*").sort
-  archiver = MoveArchiver.new(files, archive_root)
-
-  archiver.remove_failed_matches
-  archiver.determine_destinations
-
-  archiver.archive
-end
-
 def archive_images(source, archive_root)
   Dir.glob("#{source}/**/*.jpg") # odd bug, need to Dir.glob twice to get the files?
   images = Dir.glob("#{source}/**/*.jpg").sort
