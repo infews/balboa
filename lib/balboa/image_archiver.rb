@@ -2,17 +2,17 @@ module Balboa
   class NotAnImageFile < StandardError; end
 
   class ImageArchiver < Archiver
-    attr_writer :exif
+    attr_writer :exif_tool
 
     def remove_files_without_exif
-      @source_files, excluded = @source_files.partition { |source_file| @exif[source_file] }
+      @source_files, excluded = @source_files.partition { |source_file| @exif_tool.result_for(source_file) }
 
       excluded
     end
 
     def build_file_map
       @source_files.each do |source_file|
-        new_name = more_descriptive_name_for(source_file, @exif[source_file])
+        new_name = more_descriptive_name_for(source_file, @exif_tool.result_for(source_file).to_hash)
         @file_map[source_file] =
           File.join(@archive_root, destination_directory_for(new_name), new_name)
       end

@@ -2,6 +2,16 @@ RSpec.describe Balboa::ImageArchiver do
   let(:archiver) { Balboa::ImageArchiver.new(source_files, archive_root) }
   let(:source_files) { ["foo/bar/IMG_6118.JPEG", "foo/bar/IMG_6119.jpeg"] }
   let(:archive_root) { "archives" }
+  let(:exif_tool) {
+    dbl = double("ExifTool")
+    allow(dbl).to receive(:result_for)
+  }
+
+  before do
+    allow(exif_tool).to receive(:result_for).with("foo/bar/IMG_6118.JPEG").and_return({model: "Canon EOS 20D", date: Date.new(2019, 12, 16)})
+    allow(exif_tool).to receive(:result_for).with("foo/bar/IMG_6119.jpeg").and_return({model: "Canon EOS 20D", date: Date.new(2019, 12, 16)})
+    allow(exif_tool).to receive(:result_for).with("foo/bar/IMG_7000.jpeg").and_return(nil)
+  end
 
   describe "#source_files" do
     it "has the source files added" do
@@ -12,15 +22,9 @@ RSpec.describe Balboa::ImageArchiver do
 
   describe "#remove_files_without_exif" do
     let(:source_files) { ["foo/bar/IMG_6118.JPEG", "foo/bar/IMG_6119.jpeg", "foo/bar/IMG_7000.jpeg"] }
-    let(:exif_all) {
-      {
-        "foo/bar/IMG_6118.JPEG" => {model: "Canon EOS 20D", date: Date.new(2019, 12, 16)},
-        "foo/bar/IMG_6119.jpeg" => {model: "Canon EOS 20D", date: Date.new(2019, 12, 16)}
-      }
-    }
 
     it "removes files from the #source_files without corresponding EXIF data" do
-      archiver.exif = exif_all
+      archiver.exif_tool = exif_tool
       excluded = archiver.remove_files_without_exif
 
       expect(archiver.source_files).to include("foo/bar/IMG_6118.JPEG")
@@ -41,14 +45,9 @@ RSpec.describe Balboa::ImageArchiver do
 
     context "after mapping" do
       let(:source_files) { ["foo/bar/IMG_6118.JPEG", "foo/bar/IMG_6119.jpeg"] }
-      let(:exif_all) {
-        {
-          "foo/bar/IMG_6118.JPEG" => {model: "Canon EOS 20D", date: Date.new(2019, 12, 16)},
-          "foo/bar/IMG_6119.jpeg" => {model: "Canon EOS 20D", date: Date.new(2019, 12, 16)}
-        }
-      }
+
       it "builds a full destination path for supplied source files" do
-        archiver.exif = exif_all
+        archiver.exif_tool = exif_tool
         archiver.build_file_map
         file_map = archiver.file_map
 

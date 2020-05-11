@@ -1,27 +1,29 @@
 require "fileutils"
 require "rainbow/refinement"
 require "thor"
+require "exiftool"
 
 using Rainbow
 
 module Balboa
   class CLI < Thor
-    desc "archive_filethis FILETHIS_DIR ARCHIVE", "copies all PDFs from FileThis to the archive"
+    desc "archive_images SOURCE_DIR ARCHIVE", "copies all Images, renamed to aid collisions, to archive"
     method_option verbose: :boolean, default: false
 
     def archive_images(source, archive_root)
       raise NoSourceDirectoryError.new("Source directory #{source} does not exist.") unless File.exist? source
       raise NoArchiveDirectoryError.new("Archive root #{archive_root} does not exist.") unless File.exist?(archive_root)
 
-      images = Dir.glob("#{source}/**/*.{.jpg|.JPG|.jpeg|.JPEG|.heic|.HEIC}").sort
-      puts("No images found in #{source}.".red) && return if images.length == 0
+      images = Dir.glob("#{source}/**/*.{jpg,JPG,jpeg,JPEG,heic,HEIC}").sort
+      if images.length == 0
+        raise NoFilesToArchiveError.new
+      end
 
       puts "Looking for images in ".cyan + source.to_s + " to rename and archive...".cyan
       puts "Found #{images.length} total images.".cyan
 
       archiver = ImageArchiver.new(images, archive_root)
-      exif_data = ExifTool.new(images)
-      archiver.exif = exif_data
+      archiver.exif_tool = Exiftool.new(images)
 
       excluded = archiver.remove_files_without_exif
 

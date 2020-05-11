@@ -1,9 +1,12 @@
 require "balboa/cli"
+require "balboa/archive_map_entry"
+require "balboa/archive_map"
+require "balboa/file_this_archive_map"
 require "balboa/archiver"
 require "balboa/file_this_archiver"
 require "balboa/move_archiver"
-require "balboa/collision_resolver"
 require "balboa/image_archiver"
+require "balboa/collision_resolver"
 require "balboa/version"
 
 module Balboa

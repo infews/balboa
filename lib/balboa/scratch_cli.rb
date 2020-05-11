@@ -1,23 +1,32 @@
-def archive_images(source, archive_root)
-  Dir.glob("#{source}/**/*.jpg") # odd bug, need to Dir.glob twice to get the files?
-  images = Dir.glob("#{source}/**/*.jpg").sort
+def archive_filethis(source, archive_root)
+  raise NoSourceDirectoryError.new("Source directory #{source} does not exist.") unless File.exist? source
+  raise NoArchiveDirectoryError.new("Archive root #{archive_root} does not exist.") unless File.exist?(archive_root)
 
-  exif_data = ExifTool.new(images)
-  archiver = ImageArchiver.new(images, archive_root, exif_data)
+  pdfs = Dir.glob("#{source}/**/*.pdf").sort
+  puts("No PDFs found in #{source}.".red) && return if pdfs.length == 0
 
-  excluded = archiver.remove_failed_matches
-  puts excluded # we don't know how to rename these
+  puts "Looking for FileThis PDFs in ".cyan + source.to_s + " to rename and archive...".cyan
+  puts "Found #{pdfs.length} total PDFs.".cyan
 
-  archiver.name_destination_files
+  file_this_map = FileThisFileMap.new(pdfs, archive_root)
 
-  collider = CollisionResolver.new(archiver.files)
+  excluded = file_this_map.remove_failed_matches
 
-  skipped = collider.remove_files_without_collisions
-  puts skipped # these
+  if excluded.length > 0
+    puts "Skipping these #{excluded.length} files as they are not renameable:".yellow
+    excluded.each { |skip| puts skip }
+  end
 
-  collider.rename_collisions
-  archiver.update_files(collider.file_map)
+  file_this_map.rename_all_files
+  file_this_map.remove_files_already_in_the_archive
 
-  archiver.archive
-  puts archiver.files
+  file_count = file_this_map.length
+  raise NoFilesToArchiveError.new if file_count == 0 # I'm sorry, but return wasn't working here
+
+  puts "Archiving ".green + file_count.to_s + " files...".green
+  count = CopyArchiver.archive(file_map)
+
+  puts "Added #{count} files to the archive.".cyan
+rescue NoFilesToArchiveError
+  puts "No new files found to archive.".yellow
 end
