@@ -55,7 +55,7 @@ RSpec.describe Balboa::MoveArchiver do
   end
 
   describe "#archive" do
-    let(:test_root_dir) { Dir.mktmpdir("spec_balboa_gem") }
+    let(:test_root_dir) { Dir.mktmpdir("spec_balboa_gem_") }
     let(:src_file1) { File.join(test_root_dir, "src", "file1") }
     let(:src_file2) { File.join(test_root_dir, "src", "file2") }
     let(:archive_file1) { File.join(test_root_dir, "dst", "file1") }

@@ -1,6 +1,6 @@
 RSpec.describe Balboa::CLI do
   let(:cli) { Balboa::CLI.new }
-  let(:test_root_dir) { Dir.mktmpdir "spec_balboa_gem" }
+  let(:test_root_dir) { Dir.mktmpdir "spec_balboa_gem_" }
   let(:filethis) { "filethis" }
   let(:filethis_dir) { File.join test_root_dir, filethis }
   let(:archive) { "archive" }

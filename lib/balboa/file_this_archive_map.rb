@@ -1,6 +1,14 @@
+require "pry"
+require "pry-byebug"
+
 module Balboa
   class FileThisArchiveMap < ArchiveMap
     FILETHIS_REGEX = /^(?<doc>.*)(?<year>\d{4})-(?<month>\d{2})-(?<date>\d{2})(?<other>.*)\.pdf/
+
+    def remove_failed_matches
+      @map_entries, cannot_rename = partition { |entry| File.basename(entry.source).match(FILETHIS_REGEX) }
+      cannot_rename.each_with_object([]) { |entry, results| results << entry.source }
+    end
 
     def name_destination_files
       each do |entry|
@@ -8,15 +16,9 @@ module Balboa
       end
     end
 
-    def remove_failed_matches
-      @map_entries, excluded = partition { |entry| File.basename(entry.source).match(FILETHIS_REGEX) }
-      excluded.each_with_object([]) { |entry, results| results << entry.source }
-    end
-
     def remove_files_already_in_the_archive
-      each do |entry|
-        delete(entry.source) if File.exist?(File.join(@archive_root, entry.destination_path, entry.destination_basename))
-      end
+      exists, @map_entries = partition { |entry| File.exist?(File.join(@archive_root, entry.destination)) }
+      exists.each_with_object([]) { |entry, results| results << entry.source }
     end
 
     def archive_name_for(source_file)

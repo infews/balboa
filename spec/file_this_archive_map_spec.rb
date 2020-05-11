@@ -37,7 +37,7 @@ RSpec.describe Balboa::FileThisArchiveMap do
       expect(map).to include(file_this_path_2)
       expect(map).to include(file_this_path_3)
 
-      expect(map.find(file_this_path_1).destination_basename).to eq("2018.07.12.Allstate.Automobile.904150241.Statements.pdf")
+      expect(map.entry_for(file_this_path_1).destination_basename).to eq("2018.07.12.Allstate.Automobile.904150241.Statements.pdf")
     end
   end
 

@@ -19,5 +19,13 @@ module Balboa
 
       File.join(year, month)
     end
+
+    def destination
+      File.join(destination_path, destination_basename)
+    end
+
+    def ==(other)
+      source == other.source
+    end
   end
 end

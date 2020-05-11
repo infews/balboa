@@ -17,19 +17,23 @@ module Balboa
 
     def each(&block)
       @map_entries.each(&block)
-    end
-
-    def find(source_file)
-      @map_entries.find { |entry| entry.source == source_file }
+      self
     end
 
     def include?(source_file)
-      !!find(source_file)
+      !!@map_entries.find { |entry| entry.source == source_file }
     end
 
     def delete(source_file)
-      found = find(source_file)
-      @map_entries.delete(found) if found
+      found = @map_entries.find { |entry| entry.source == source_file }
+      if found
+        @map_entries.delete(found)
+      end
+      found
+    end
+
+    def entry_for(source_file)
+      @map_entries.find { |entry| entry.source == source_file }
     end
   end
 end

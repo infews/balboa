@@ -32,6 +32,8 @@ RSpec.describe Balboa::ArchiveMap do
 
     describe "#delete" do
       it "delegates to the underlying collection of entries" do
+        expect(map.length).to eq(3)
+
         map.delete(file_2)
 
         expect(map.length).to eq(2)
@@ -41,14 +43,6 @@ RSpec.describe Balboa::ArchiveMap do
         expect(map.length).to eq(2)
       end
     end
-
-    describe "#find" do
-      it "delegates to the underlying collection of entries" do
-        entry = map.find(file_3)
-        expect(entry.source).to eq(file_3)
-      end
-    end
-
     describe "#include?" do
       it "delegates to the underlying collection of entries" do
         expect(map).to include(file_1)

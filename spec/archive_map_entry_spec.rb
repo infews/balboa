@@ -8,6 +8,24 @@ RSpec.describe Balboa::ArchiveMapEntry do
     end
   end
 
+  describe "equality" do
+    it "is based on value of source" do
+      equal_entry = Balboa::ArchiveMapEntry.new("foo/bar/a_file.txt")
+      expect(entry == equal_entry).to eq(true)
+
+      unequal_entry = Balboa::ArchiveMapEntry.new("baz/quux.jpg")
+      expect(entry == unequal_entry).to eq(false)
+    end
+  end
+
+  describe "#destination" do
+    it "returns a constructed path to the file" do
+      entry.destination_basename = "2019.01.01.foo_bar.txt"
+
+      expect(entry.destination).to eq(File.join(entry.destination_path, entry.destination_basename))
+    end
+  end
+
   describe "#destination_basename" do
     it "is an available accessor" do
       expect(entry.destination_basename).to be_nil
