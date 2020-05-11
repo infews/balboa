@@ -19,18 +19,19 @@ module Balboa
       puts "Looking for Balboa-convention-named files ".cyan + source.to_s + " to move to archive...".cyan
       puts "Found #{files.length} total files.".cyan
 
-      archiver = MoveArchiver.new(files, archive_root)
+      file_map = MoveToArchiveMap.new(files, archive_root)
 
-      archiver.remove_failed_matches
-      archiver.determine_destinations
+      file_map.remove_failed_matches
+      file_map.determine_destinations
 
-      file_count = archiver.file_map.keys.length
+      file_count = file_map.length
       raise NoFilesToArchiveError.new if file_count == 0 # I'm sorry, but return wasn't working here
 
       puts "Archiving ".green + file_count.to_s + " files...".green
+      archiver = MoveToArchiver.new(file_map)
       archiver.archive
 
-      puts "Moved #{archiver.file_map.length} files to the archive.".cyan
+      puts "Moved #{file_count} files to the archive.".cyan
     rescue NoFilesToArchiveError
       puts "No files found to archive.".yellow
     end

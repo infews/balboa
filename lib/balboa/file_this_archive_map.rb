@@ -1,6 +1,3 @@
-require "pry"
-require "pry-byebug"
-
 module Balboa
   class FileThisArchiveMap < ArchiveMap
     FILETHIS_REGEX = /^(?<doc>.*)(?<year>\d{4})-(?<month>\d{2})-(?<date>\d{2})(?<other>.*)\.pdf/
